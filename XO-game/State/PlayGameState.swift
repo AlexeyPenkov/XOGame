@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol PlayGameState {
+protocol PlayGameStateProtocol {
     var isMoveCompleted: Bool { get set }
     func addSign(at position: GameboardPosition)
     func begin()
