@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class GameViewController: UIViewController {
 
     @IBOutlet var gameboardView: GameboardView!
@@ -20,26 +21,43 @@ class GameViewController: UIViewController {
     private let gameBoard = Gameboard()
     private lazy var referee = Referee(gameboard: gameBoard)
     
-    private var currentState: PlayGameState! {
+    private var currentState: PlayGameStateProtocol! {
         didSet {
             currentState.begin()
         }
     }
+    
+    var playerType = PlayerType.people
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         firstPlayerTurn()
         
-        gameboardView.onSelectPosition = { [weak self] position in
-            guard let self = self else { return }
+        if playerType == .people {
+            gameboardView.onSelectPosition = { [weak self] position in
+                guard let self = self else { return }
 
-            self.currentState.addSign(at: position)
-            self.counter += 1
+                self.currentState.addSign(at: position)
+                self.counter += 1
 
-            if self.currentState.isMoveCompleted {
-                self.nextPlayerTurn()
+                if self.currentState.isMoveCompleted {
+                    self.nextPlayerTurn()
+                }
             }
+        } else {
+            let position = gameboardView.getRandomPosition()
+            
+//            gameboardView.onSelectPosition = { [weak self] position in
+//                guard let self = self else { return }
+
+                self.currentState.addSign(at: position)
+                self.counter += 1
+
+                if self.currentState.isMoveCompleted {
+                    self.nextPlayerTurn()
+                }
+//            }
         }
     }
     
@@ -51,6 +69,10 @@ class GameViewController: UIViewController {
         counter = 0
         
         firstPlayerTurn()
+    }
+    
+    @IBAction func closeButtonAction(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
     }
     
     private func firstPlayerTurn() {
@@ -77,10 +99,18 @@ class GameViewController: UIViewController {
         }
         
         if let playerState = currentState as? PlayerGameState {
-            let next = playerState.player.next
-            let markView = getMarkView(player: next)
-            currentState = PlayerGameState(player: next, gameViewController: self,
-                                           gameBoard: gameBoard, gameBoardView: gameboardView, markView: markView)
+            let next: Player?
+            if playerType == .people {
+                next = playerState.player.next
+            } else {
+                next = playerState.player.nextComputeStep
+            }
+            
+            if let next = next {
+                let markView = getMarkView(player: next)
+                currentState = PlayerGameState(player: next, gameViewController: self,
+                                               gameBoard: gameBoard, gameBoardView: gameboardView, markView: markView)
+            }
         }
         
     }
@@ -90,6 +120,8 @@ class GameViewController: UIViewController {
         case .first:
             return XView()
         case .second:
+            return OView()
+        case .computer:
             return OView()
         }
     }

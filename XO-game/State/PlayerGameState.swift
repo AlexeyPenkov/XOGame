@@ -8,7 +8,7 @@
 
 import Foundation
 
-class PlayerGameState: PlayGameState {
+class PlayerGameState: PlayGameStateProtocol {
     var isMoveCompleted: Bool = false
     
     public let player: Player
@@ -52,6 +52,9 @@ class PlayerGameState: PlayGameState {
             gameViewController?.firstPlayerTurnLabel.isHidden = false
             gameViewController?.secondPlayerTurnLabel.isHidden = true
         case .second:
+            gameViewController?.firstPlayerTurnLabel.isHidden = true
+            gameViewController?.secondPlayerTurnLabel.isHidden = false
+        case .computer:
             gameViewController?.firstPlayerTurnLabel.isHidden = true
             gameViewController?.secondPlayerTurnLabel.isHidden = false
         }

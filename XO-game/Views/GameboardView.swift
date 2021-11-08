@@ -79,6 +79,15 @@ public class GameboardView: UIView {
         onSelectPosition?(position)
     }
     
+    // MARK: - Random position
+    
+    func getRandomPosition() -> GameboardPosition{
+        let position = GameboardPosition(column: Int.random(in: 0...2),
+                                         row: Int.random(in: 0...2))
+//        onSelectPosition?(position)
+        return position
+    }
+    
     // MARK: - UI
     
     private func drawColumnLines(for rect: CGRect) {

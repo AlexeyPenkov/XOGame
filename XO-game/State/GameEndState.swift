@@ -8,7 +8,7 @@
 
 import Foundation
 
-class GameEndState: PlayGameState {
+class GameEndState: PlayGameStateProtocol {
     var isMoveCompleted: Bool = false
     
     public let winnerPlayer: Player?
@@ -26,10 +26,10 @@ class GameEndState: PlayGameState {
         
         if let winnerPlayer = winnerPlayer {
             Logger.shared.log(action: .gameFinished(won: winnerPlayer))
-            gameViewController?.winnerLabel.text = setPlayerName(player: winnerPlayer) + " won"
+            gameViewController?.winnerLabel.text = setPlayerName(player: winnerPlayer) + " выйграл"
         } else {
             Logger.shared.log(action: .gameFinished(won: nil))
-            gameViewController?.winnerLabel.text = "No winner/Draw"
+            gameViewController?.winnerLabel.text = "Нет победителя/Ничья"
         }
         
         gameViewController?.firstPlayerTurnLabel.isHidden = true
@@ -43,6 +43,8 @@ class GameEndState: PlayGameState {
             return "First"
         case .second:
             return "Second"
+        case .computer:
+            return "Computer"
         }
     }
 }
